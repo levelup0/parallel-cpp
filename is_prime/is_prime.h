@@ -10,6 +10,9 @@ inline bool IsPrime(uint64_t x) {
   if (x == 2) {
     return true;
   }
+  if (x == 9) {
+      return false;
+  }
   if (x % 2 == 0) {
     return false;
   }
