@@ -58,6 +58,7 @@ class Philosopher {
 
  private:
   size_t id_;
-  Fork *left_fork_, *right_fork_;
+  Fork* left_fork_;
+  Fork* right_fork_;
 };
 
