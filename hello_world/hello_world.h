@@ -18,9 +18,8 @@ class HelloWorld {
       std::mutex m;
       for (size_t i = 0; i < mN_threads; ++i) {
           threads.emplace_back([&] {
-                  m.lock();
+                  std::unique_lock<std::mutex> lock(m);
                   out << kHelloPrefix << std::this_thread::get_id() << '\n';
-                  m.unlock();
                   });
       }
 
