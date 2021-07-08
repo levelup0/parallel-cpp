@@ -5,29 +5,23 @@
 using namespace std::chrono_literals;
 
 class Deadlock {
- public:
-  Deadlock() {
-    x = y = 0;
-  }
+public:
+    Deadlock() {
+    }
 
-  void ThreadOne() {
-    x_mutex.lock();
-    std::this_thread::sleep_for(10ms);
-    y_mutex.lock();
-    x_mutex.unlock();
-    y_mutex.unlock();
-  }
+    void ThreadOne() {
+        std::unique_lock<std::mutex> x_lock(x_mutex_);
+        std::this_thread::sleep_for(10ms);
+        std::unique_lock<std::mutex> y_lock(y_mutex_);
+    }
 
-  void ThreadTwo() {
-    y_mutex.lock();
-    std::this_thread::sleep_for(10ms);
-    x_mutex.lock();
-    y_mutex.unlock();
-    x_mutex.unlock();
-  }
+    void ThreadTwo() {
+        std::unique_lock<std::mutex> y_lock(y_mutex_);
+        std::this_thread::sleep_for(10ms);
+        std::unique_lock<std::mutex> x_lock(x_mutex_);
+    }
 
- private:
-  std::mutex x_mutex, y_mutex;
-  int x, y;
+private:
+    std::mutex x_mutex_, y_mutex_;
 };
 
