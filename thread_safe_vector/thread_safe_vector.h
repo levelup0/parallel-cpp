@@ -17,20 +17,19 @@ public:
     }
 
     size_t Size() const {
-        std::shared_lock<std::shared_mutex> lock(shared_mutex_);
+        std::unique_lock<std::mutex> u_lock(mutex_);
+        std::shared_lock<std::shared_mutex> sh_lock(shared_mutex_);
         return vector_.size();
     }
 
     void PushBack(const T& value) {
         std::unique_lock<std::mutex> outer_lock(mutex_);
         if (vector_.size() == vector_.capacity()) {
-            shared_mutex_.lock();
+            std::unique_lock<std::shared_mutex> inner_lock(shared_mutex_);
             vector_.push_back(value);
-            shared_mutex_.unlock();
         } else {
-            shared_mutex_.lock_shared();
+            std::shared_lock<std::shared_mutex> inner_lock(shared_mutex_);
             vector_.push_back(value);
-            shared_mutex_.unlock_shared();
         }
     }
 
